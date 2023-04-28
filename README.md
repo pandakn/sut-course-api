@@ -1,7 +1,7 @@
 
 # SUT COURSE API
 
-This project for learing scraping course data from Reg SUT
+This project scrapes course data from Reg SUT.
 
 
 ## API Reference
