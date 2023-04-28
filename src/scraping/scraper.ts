@@ -3,9 +3,10 @@ import axios from "axios";
 import iconv from "iconv-lite";
 import { scrapeCourseDetails } from "./course-detail";
 import {
-  CourseData,
+  Course,
   CourseDetails,
   ClassSchedule,
+  Seat,
 } from "../interfaces/course.interface";
 
 const statusObj: { [key: string]: string } = {
@@ -35,7 +36,7 @@ const parseSchedule = (schedule: string): ClassSchedule[] => {
   return [];
 };
 
-const scrapeCourseData = async (url: string): Promise<CourseData[] | null> => {
+const scrapeCourseData = async (url: string): Promise<Course[] | null> => {
   try {
     const response = await axios({
       url,
@@ -44,7 +45,7 @@ const scrapeCourseData = async (url: string): Promise<CourseData[] | null> => {
 
     const data = iconv.decode(Buffer.from(response.data), "tis-620");
     const $ = cheerio.load(data);
-    const courseData: CourseData[] = [];
+    const courseData: Course[] = [];
 
     for (const [index, el] of $("table tr:nth-child(n+4)")
       .toArray()
@@ -80,10 +81,11 @@ const scrapeCourseData = async (url: string): Promise<CourseData[] | null> => {
         .text()
         .trim();
       // extract text in brackets
-      const note = noteStr
-        .substring(1, noteStr.length - 1)
-        .trim()
-        .replace(/\s+/g, " ");
+      const note =
+        noteStr
+          .substring(1, noteStr.length - 1)
+          .trim()
+          .replace(/\s+/g, " ") || null;
 
       // output -> 4 (3-2-8)
       const credit = $(el).find("td:nth-child(4)").text().trim();
@@ -116,6 +118,7 @@ const scrapeCourseData = async (url: string): Promise<CourseData[] | null> => {
           room: rooms[idx],
         };
       });
+      classSchedule.length > 0 ? classSchedule : null;
 
       // section
       const section = $(el).find("td:nth-child(8)").text().trim();
@@ -124,6 +127,11 @@ const scrapeCourseData = async (url: string): Promise<CourseData[] | null> => {
       const totalSeat = $(el).find("td:nth-child(9)").text().trim();
       const registered = $(el).find("td:nth-child(10)").text().trim();
       const remain = $(el).find("td:nth-child(11)").text().trim();
+      const seat: Seat = {
+        totalSeat,
+        registered,
+        remain,
+      };
 
       // status
       const statusCode = $(el).find("td:nth-child(12)").text().trim();
@@ -131,7 +139,7 @@ const scrapeCourseData = async (url: string): Promise<CourseData[] | null> => {
 
       if (courseCode) {
         const urlCourseDetails = `http://reg.sut.ac.th/registrar/${courseCodeUrl}`;
-        const details = await scrapeCourseDetails(
+        const res = await scrapeCourseDetails(
           urlCourseDetails,
           Number(section)
         );
@@ -146,9 +154,18 @@ const scrapeCourseData = async (url: string): Promise<CourseData[] | null> => {
           equivalentCourse,
           midExam,
           finalExam,
-        }: CourseDetails = details;
+        } = res;
 
-        const dataObj: CourseData = {
+        const details: CourseDetails = {
+          courseStatus,
+          courseCondition,
+          continueCourse,
+          equivalentCourse,
+          midExam,
+          finalExam,
+        };
+
+        const dataObj: Course = {
           id: index,
           url: urlCourseDetails,
           courseCode: courseCode.trim(),
@@ -164,20 +181,9 @@ const scrapeCourseData = async (url: string): Promise<CourseData[] | null> => {
           status,
           language,
           degree,
-          classSchedule: classSchedule.length > 0 ? classSchedule : null,
-          seat: {
-            totalSeat,
-            registered,
-            remain,
-          },
-          details: {
-            courseStatus,
-            courseCondition,
-            continueCourse,
-            equivalentCourse,
-            midExam,
-            finalExam,
-          },
+          classSchedule,
+          seat,
+          details,
         };
         courseData.push(dataObj);
       }

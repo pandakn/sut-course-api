@@ -1,7 +1,6 @@
 import cheerio from "cheerio";
 import axios from "axios";
 import iconv from "iconv-lite";
-import { CourseDetails } from "interfaces/course.interface";
 
 const extractCourse = ($: cheerio.Root, selector: string): string[] => {
   const data: string[] = [];
@@ -42,10 +41,7 @@ const checkValueArray = (variable: string[]): string[] | null => {
   return variable.length < 1 ? null : variable;
 };
 
-const scrapeCourseDetails = async (
-  courseCodeUrl: string,
-  sec: number
-): Promise<CourseDetails | null> => {
+const scrapeCourseDetails = async (courseCodeUrl: string, sec: number) => {
   try {
     const response = await axios({
       url: courseCodeUrl,
@@ -100,7 +96,7 @@ const scrapeCourseDetails = async (
       sec
     );
 
-    const courseData: CourseDetails = {
+    const courseData = {
       courseNameTH,
       courseNameEN,
       faculty,

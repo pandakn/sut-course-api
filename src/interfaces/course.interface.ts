@@ -11,10 +11,6 @@ export interface Seat {
 }
 
 export interface CourseDetails {
-  courseNameTH: string;
-  courseNameEN: string;
-  faculty: string;
-  department: string;
   courseStatus: string;
   courseCondition: string[] | null;
   continueCourse: string[] | null;
@@ -23,7 +19,7 @@ export interface CourseDetails {
   finalExam: string | null;
 }
 
-export interface CourseData {
+export interface Course {
   id: number;
   url: string;
   courseCode: string;
@@ -41,5 +37,5 @@ export interface CourseData {
   degree: string;
   classSchedule: ClassSchedule[] | null;
   seat: Seat;
-  details: Partial<CourseDetails>;
+  details: CourseDetails;
 }
