@@ -18,9 +18,11 @@ This project scrapes course data from Reg SUT.
 | `semester` | `string` | The semester for which you want to retrieve courses (e.g. 3) |
 | `coursecode` | `string` | The course code pattern to filter courses (e.g. ist30 1105) |
 | `coursename` | `string` | The course name to filter courses (e.g. english*) |
-| `maxrow` | `string` | 50 |
+| `maxrow` | `string` | The maximum number of rows to return in the response (e.g. 50)|
 
 > __Note__ : Either one of coursecode or coursename can be entered.
+
+> __Warning__ : If coursecode and coursename are not specified, scraping all the data will take a very long time.
 
 >`e.g.: /api/courses?acadyear=2565&semester=3&coursecode=ist30 1105&coursename=&maxrow=50`
 
