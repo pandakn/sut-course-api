@@ -1,8 +1,33 @@
-# SUT COURSE API
+# SUT COURSE API 📚
 
 This project scrapes course data from Reg SUT.
 
-## API Reference
+
+## Getting started 🚀
+
+Clone this repository
+
+```zsh
+git clone https://github.com/pandakn/sut-course-api.git
+
+cd sut-course-api
+```
+
+Install dependencies using `npm`
+
+```zsh
+npm install
+```
+
+After this step, you will get `node_modules` folder in the root of the project.
+
+### Start Project
+```
+npm run dev
+```
+The applciation will run at [localhost:3000](http://localhost:3000) or you can port change
+
+## API Reference 
 
 #### Get Course
 
@@ -83,7 +108,7 @@ This project scrapes course data from Reg SUT.
                 "midExam": null,
                 "finalExam": "4 ก.ค. 2566 เวลา 09:00 - 12:00 อาคาร B ห้อง N (สอบตามตารางมหาวิทยาลัย)"
             }
-        },
+        }
     ]
 }
 ```
