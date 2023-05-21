@@ -51,67 +51,112 @@ The applciation will run at [localhost:3000](http://localhost:3000) or you can p
 
 ## Usage/Examples JSON
 
+
+## Usage/Examples JSON
+
 ```json
 "data": {
     "year": "3/2565",
     "courseData": [
         {
-            "id": 1,
-            "url": "http://reg.sut.ac.th/registrar/class_info_2.asp?backto=home&option=0&courseid=1011782&coursecode=IST301105&acadyear=2565&semester=3&avs434084436=1",
             "courseCode": "IST30 1105",
             "version": "1",
-            "courseNameEN": "ENGLISH FOR CAREERS",
-            "courseNameTH": "ภาษาอังกฤษเพื่อการทำงาน",
-            "faculty": "สำนักวิชาเทคโนโลยีสังคม",
-            "department": "ภาษาต่างประเทศ",
-            "note": "(FOR INTERNATIONAL PROGRAM)",
-            "professors": [
-                "ผู้ช่วยศาสตราจารย์จินดาพร แสงกาญจนวนิช",
-                "อาจารย์Michael Sinclair Scott"
-            ],
+            "courseNames": {
+                "en": "ENGLISH FOR CAREERS",
+                "th": "ภาษาอังกฤษเพื่อการทำงาน"
+            },
             "credit": "3 (3-0-6)",
-            "section": "1",
-            "status": "เปิดลงปกติ สามารถลงทะเบียนผ่าน WEB ได้",
-            "language": "EN ",
             "degree": "ปริญญาตรี",
-            "classSchedule": [
+            "department": "ภาษาต่างประเทศ",
+            "faculty": "สำนักวิชาเทคโนโลยีสังคม",
+            "courseStatus": "ใช้งาน",
+            "courseCondition": [
+                "IST30 1104",
+                "213204",
+                "203204"
+            ],
+            "continueCourse": [
+                "224359"
+            ],
+            "equivalentCourse": [
+                "213305",
+                "IST30 1105"
+            ],
+            "sectionsCount": 22,
+            "sections": [
                 {
-                    "day": "Mo",
-                    "times": "09:00-10:00",
-                    "room": "B1116"
+                    "id": "4ba96609-96bd-4687-b168-719a431a5bd6",
+                    "url": "http://reg.sut.ac.th/registrar/class_info_2.asp?backto=home&option=0&courseid=1011782&coursecode=IST301105&acadyear=2565&semester=3&avs264862977=1",
+                    "section": "1",
+                    "status": "เปิดลงปกติ สามารถลงทะเบียนผ่าน WEB ได้",
+                    "note": "(FOR INTERNATIONAL PROGRAM)",
+                    "professors": [
+                        "ผู้ช่วยศาสตราจารย์จินดาพร แสงกาญจนวนิช",
+                        "อาจารย์Michael Sinclair Scott"
+                    ],
+                    "language": "EN ",
+                    "seat": {
+                        "totalSeat": "40",
+                        "registered": "39",
+                        "remain": "1"
+                    },
+                    "classSchedule": [
+                        {
+                            "day": "Mo",
+                            "times": "09:00-10:00",
+                            "room": "B1116"
+                        },
+                        {
+                            "day": "We",
+                            "times": "08:00-10:00",
+                            "room": "B1114"
+                        }
+                    ],
+                    "exams": {
+                        "midterm": null,
+                        "final": "4 ก.ค. 2566 เวลา 09:00 - 12:00 อาคาร B ห้อง N (สอบตามตารางมหาวิทยาลัย)"
+                    }
                 },
                 {
-                    "day": "We",
-                    "times": "08:00-10:00",
-                    "room": "B1114"
-                }
-            ],
-            "seat": {
-                "totalSeat": "40",
-                "registered": "39",
-                "remain": "1"
-            },
-            "details": {
-                "courseStatus": "ใช้งาน",
-                "courseCondition": [
-                    "IST30 1104",
-                    "213204",
-                    "203204"
-                ],
-                "continueCourse": [
-                    "224359"
-                ],
-                "equivalentCourse": [
-                    "213305",
-                    "IST30 1105"
-                ],
-                "midExam": null,
-                "finalExam": "4 ก.ค. 2566 เวลา 09:00 - 12:00 อาคาร B ห้อง N (สอบตามตารางมหาวิทยาลัย)"
-            }
+                    "id": "cc296b26-3156-406e-a291-726d4b4f4207",
+                    "url": "http://reg.sut.ac.th/registrar/class_info_2.asp?backto=home&option=0&courseid=1011782&coursecode=IST301105&acadyear=2565&semester=3&avs264862977=2",
+                    "section": "2",
+                    "status": "เปิดลงปกติ สามารถลงทะเบียนผ่าน WEB ได้",
+                    "note": null,
+                    "professors": [
+                        "ผู้ช่วยศาสตราจารย์จินดาพร แสงกาญจนวนิช",
+                        "ผู้ช่วยศาสตราจารย์ ดร.กุลภักดิ์ กองสุวรรณกุล"
+                    ],
+                    "language": "TH ",
+                    "seat": {
+                        "totalSeat": "41",
+                        "registered": "41",
+                        "remain": "0"
+                    },
+                    "classSchedule": [
+                        {
+                            "day": "Mo",
+                            "times": "13:00-15:00",
+                            "room": "B1114"
+                        },
+                        {
+                            "day": "We",
+                            "times": "16:00-17:00",
+                            "room": "B1118"
+                        }
+                    ],
+                    "exams": {
+                        "midterm": null,
+                        "final": "4 ก.ค. 2566 เวลา 09:00 - 12:00 อาคาร B ห้อง N (สอบตามตารางมหาวิทยาลัย)"
+                    }
+                },
+            ]
         }
     ]
 }
 ```
+
+
 
 ## Tech Stack
 
