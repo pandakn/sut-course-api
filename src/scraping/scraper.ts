@@ -1,12 +1,15 @@
 import cheerio from "cheerio";
 import axios from "axios";
 import iconv from "iconv-lite";
+import { v4 as uuidv4 } from "uuid";
 import { scrapeCourseDetails } from "./course-detail";
 import {
-  Course,
-  CourseDetails,
-  ClassSchedule,
-  Seat,
+  ICourse,
+  ICourseDetails,
+  IClassSchedule,
+  ISeat,
+  IGroupedCourse,
+  ISection,
 } from "../interfaces/course.interface";
 
 const statusObj: { [key: string]: string } = {
@@ -18,8 +21,68 @@ const statusObj: { [key: string]: string } = {
   X: "เปลี่ยนกลุ่มผ่าน WEB ได้เท่านั้น",
 };
 
+// Group courses by course code and version
+const groupedCourses = (courses: ICourse[]): IGroupedCourse[] => {
+  const groupedCoursesMap = courses.reduce((acc, course) => {
+    const key = `${course.courseCode}-${course.version}`;
+    const { courseNameEN, courseNameTH, degree, department, faculty } = course;
+
+    // acc stand for accumulator
+    if (!acc[key]) {
+      acc[key] = {
+        courseCode: course.courseCode,
+        version: course.version,
+        courseNames: { en: courseNameEN, th: courseNameTH },
+        credit: course.credit,
+        degree,
+        department,
+        faculty,
+        courseStatus: course.details.courseStatus,
+        courseCondition: course.details.courseCondition,
+        continueCourse: course.details.continueCourse,
+        equivalentCourse: course.details.equivalentCourse,
+        sectionsCount: 0,
+        sections: [],
+      };
+    }
+
+    // Check if the current section has already been added
+    const sectionExists = acc[key].sections.some(
+      (existingSection) => existingSection.section === course.section
+    );
+
+    // If the section does not exist yet, add it
+    if (!sectionExists) {
+      const section: ISection = {
+        id: course.id,
+        url: course.url,
+        section: course.section,
+        status: course.statusSection,
+        note: course.note,
+        professors: course.professors,
+        language: course.language,
+        seat: course.seat,
+        classSchedule: course.classSchedule,
+        exams: {
+          midterm: course.details.midExam,
+          final: course.details.finalExam,
+        },
+      };
+
+      acc[key].sections.push(section);
+    }
+
+    // Update the totalSections property
+    acc[key].sectionsCount = acc[key].sections.length;
+
+    return acc;
+  }, {} as { [key: string]: IGroupedCourse });
+
+  return Object.values(groupedCoursesMap);
+};
+
 // extract time and day
-const parseSchedule = (schedule: string): ClassSchedule[] => {
+const parseSchedule = (schedule: string): IClassSchedule[] => {
   const timeRegex = /\d{2}:\d{2}-\d{2}:\d{2}/g;
   const dayRegex = /Mo|Tu|We|Th|Fr|Sa|Su/g;
 
@@ -36,7 +99,9 @@ const parseSchedule = (schedule: string): ClassSchedule[] => {
   return [];
 };
 
-const scrapeCourseData = async (url: string): Promise<Course[] | null> => {
+const scrapeCourseData = async (
+  url: string
+): Promise<IGroupedCourse[] | null> => {
   try {
     const response = await axios({
       url,
@@ -45,7 +110,7 @@ const scrapeCourseData = async (url: string): Promise<Course[] | null> => {
 
     const data = iconv.decode(Buffer.from(response.data), "tis-620");
     const $ = cheerio.load(data);
-    const courseData: Course[] = [];
+    const courseData: ICourse[] = [];
 
     for (const [index, el] of $("table tr:nth-child(n+4)")
       .toArray()
@@ -112,13 +177,14 @@ const scrapeCourseData = async (url: string): Promise<Course[] | null> => {
       // day, time, room
       const scheduleStr = $(el).find("td:nth-child(7) > font").text();
       const schedules = parseSchedule(scheduleStr);
-      const classSchedule: ClassSchedule[] = schedules.map((schedule, idx) => {
-        return {
-          ...schedule,
-          room: rooms[idx],
-        };
-      });
-      classSchedule.length > 0 ? classSchedule : null;
+      const classSchedule: IClassSchedule[] | null = schedules.map(
+        (schedule, idx) => {
+          return {
+            ...schedule,
+            room: rooms[idx],
+          };
+        }
+      );
 
       // section
       const section = $(el).find("td:nth-child(8)").text().trim();
@@ -127,22 +193,25 @@ const scrapeCourseData = async (url: string): Promise<Course[] | null> => {
       const totalSeat = $(el).find("td:nth-child(9)").text().trim();
       const registered = $(el).find("td:nth-child(10)").text().trim();
       const remain = $(el).find("td:nth-child(11)").text().trim();
-      const seat: Seat = {
+      const seat: ISeat = {
         totalSeat,
         registered,
         remain,
       };
 
       // status
-      const statusCode = $(el).find("td:nth-child(12)").text().trim();
-      const status = statusObj[statusCode];
+      const statusSectionCode = $(el).find("td:nth-child(12)").text().trim();
+      const statusSection = statusObj[statusSectionCode];
 
       if (courseCode) {
+        const uniqueId = uuidv4();
+
         const urlCourseDetails = `http://reg.sut.ac.th/registrar/${courseCodeUrl}`;
         const res = await scrapeCourseDetails(
           urlCourseDetails,
           Number(section)
         );
+
         const {
           courseNameTH,
           courseNameEN,
@@ -156,7 +225,7 @@ const scrapeCourseData = async (url: string): Promise<Course[] | null> => {
           finalExam,
         } = res;
 
-        const details: CourseDetails = {
+        const details: ICourseDetails = {
           courseStatus,
           courseCondition,
           continueCourse,
@@ -165,8 +234,8 @@ const scrapeCourseData = async (url: string): Promise<Course[] | null> => {
           finalExam,
         };
 
-        const dataObj: Course = {
-          id: index,
+        const dataObj: ICourse = {
+          id: uniqueId,
           url: urlCourseDetails,
           courseCode: courseCode.trim(),
           version: version.trim(),
@@ -178,10 +247,10 @@ const scrapeCourseData = async (url: string): Promise<Course[] | null> => {
           professors,
           credit,
           section,
-          status,
+          statusSection,
           language,
           degree,
-          classSchedule,
+          classSchedule: classSchedule.length < 1 ? null : classSchedule,
           seat,
           details,
         };
@@ -189,7 +258,9 @@ const scrapeCourseData = async (url: string): Promise<Course[] | null> => {
       }
     }
 
-    return courseData;
+    const result = groupedCourses(courseData);
+
+    return result;
   } catch (error) {
     console.error(error);
     return null;
