@@ -49,8 +49,6 @@ The applciation will run at [localhost:3000](http://localhost:3000) or you can p
 
 > `e.g.: /api/courses?acadyear=2565&semester=3&coursecode=ist30 1105&coursename=&maxrow=50`
 
-## Usage/Examples JSON
-
 
 ## Usage/Examples JSON
 
