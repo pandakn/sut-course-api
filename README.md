@@ -26,13 +26,15 @@ After this step, you will get `node_modules` folder in the root of the project.
 docker-compose -f docker-compose.yml up
 ```
 
+The applciation will run at [localhost:3000](http://localhost:3000) or you can port change
+
 ### Connect with redis-cli
 
 ```
 docker exec -it redis redis-cli
 ```
 
-The applciation will run at [localhost:3000](http://localhost:3000) or you can port change
+
 
 ## API Reference
 
