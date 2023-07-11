@@ -2,7 +2,6 @@
 
 This project scrapes course data from Reg SUT.
 
-
 ## Getting started 🚀
 
 Clone this repository
@@ -22,12 +21,20 @@ npm install
 After this step, you will get `node_modules` folder in the root of the project.
 
 ### Start Project
+
 ```
-npm run dev
+docker-compose -f docker-compose.yml up
 ```
+
+### Connect with redis-cli
+
+```
+docker exec -it redis redis-cli
+```
+
 The applciation will run at [localhost:3000](http://localhost:3000) or you can port change
 
-## API Reference 
+## API Reference
 
 #### Get Course
 
@@ -49,6 +56,10 @@ The applciation will run at [localhost:3000](http://localhost:3000) or you can p
 
 > `e.g.: /api/courses?acadyear=2565&semester=3&coursecode=ist30 1105&coursename=&maxrow=50`
 
+<<<<<<< HEAD
+=======
+## Usage/Examples JSON
+>>>>>>> 423ebae (added docker)
 
 ## Usage/Examples JSON
 
@@ -153,8 +164,6 @@ The applciation will run at [localhost:3000](http://localhost:3000) or you can p
     ]
 }
 ```
-
-
 
 ## Tech Stack
 
