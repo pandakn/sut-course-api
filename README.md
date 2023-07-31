@@ -58,10 +58,6 @@ docker exec -it redis redis-cli
 
 > `e.g.: /api/courses?acadyear=2565&semester=3&coursecode=ist30 1105&coursename=&maxrow=50`
 
-<<<<<<< HEAD
-=======
-## Usage/Examples JSON
->>>>>>> 423ebae (added docker)
 
 ## Usage/Examples JSON
 
