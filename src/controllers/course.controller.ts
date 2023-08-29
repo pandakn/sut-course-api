@@ -5,13 +5,30 @@ import { scrapeCourseData } from "../scraping/scraper";
 const redisClient = connectRedis();
 
 const getCourseData = async (req: Request, res: Response) => {
-  const { maxrow, acadyear, semester, coursecode, coursename } =
-    req.query as Record<string, string>;
+  const {
+    maxrow,
+    acadyear,
+    semester,
+    coursecode,
+    coursename,
+    cmd = 2,
+    weekdays,
+    timefrom,
+    timeto,
+  } = req.query as Record<string, string>;
 
   // Use the query parameters to build the URL for the course data
-  const url = `http://reg.sut.ac.th/registrar/class_info_1.asp?coursestatus=O00&facultyid=all&maxrow=${maxrow}&acadyear=${acadyear}&semester=${semester}&CAMPUSID=&LEVELID=&coursecode=${coursecode}&coursename=${coursename}&cmd=2`;
+  let url = `http://reg.sut.ac.th/registrar/class_info_1.asp?coursestatus=O00&facultyid=all&maxrow=${maxrow}&acadyear=${acadyear}&semester=${semester}&CAMPUSID=&LEVELID=&coursecode=${coursecode}&coursename=${coursename}&cmd=${cmd}`;
 
-  const cacheKey = `${coursecode}:${coursename}:${semester}:${acadyear}`;
+  // use filter course by day and time
+  if (cmd === "1") {
+    url += `&weekdays=${weekdays}&timefrom=${timefrom}&timeto=${timeto}`;
+  }
+
+  const cacheKey = `${coursecode}:${coursename}:${semester}:${acadyear}:${
+    weekdays || ""
+  }:${timefrom || ""}:${timeto || ""}`;
+
   const cachedData = await redisClient.get(cacheKey);
 
   if (cachedData) {
